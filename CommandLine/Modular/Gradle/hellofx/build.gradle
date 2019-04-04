@@ -8,7 +8,7 @@ repositories {
 }
 
 javafx {
-    modules = [ 'javafx.controls' ]
+    modules = [ 'javafx.controls', 'javafx.web' ]
 }
 
 mainClassName = "$moduleName/hellofx.HelloFX"
@@ -31,4 +31,13 @@ task jlink(type: Exec) {
     commandLine "${java_home}/bin/jlink", '--module-path', "libs${File.pathSeparatorChar}${fx_jmods}",
             '--add-modules', "${moduleName}", '--output', "${moduleName}", '--strip-debug',
             '--compress', '2', '--no-header-files', '--no-man-pages'
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'hellofx.Launcher'
+    }
+    from {
+        configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }
